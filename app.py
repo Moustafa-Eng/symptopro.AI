@@ -4,6 +4,8 @@ from pydantic import BaseModel
 import pickle
 import numpy as np
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
+
 
 # Define the input schema
 class InputData(BaseModel):
@@ -65,6 +67,14 @@ disease_map = {
 
 # Initialize the FastAPI application
 app = FastAPI()
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins, you can specify specific domains instead
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allows all headers
+)
 
 @app.post("/predict")
 async def predict(input_data: InputData):
@@ -94,6 +104,7 @@ async def predict(input_data: InputData):
 
 @app.get("/")
 def root():
+    
     return {"message": "Welcome FADY to the ML Prediction API!"}
   
   
