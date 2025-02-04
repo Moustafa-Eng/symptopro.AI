@@ -1,8 +1,9 @@
-
+import os
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import pickle
 import numpy as np
+import uvicorn
 
 # Define the input schema
 class InputData(BaseModel):
@@ -65,7 +66,7 @@ disease_map = {
 # Initialize the FastAPI application
 app = FastAPI()
 
-@app.post("/predict/")
+@app.post("/predict")
 async def predict(input_data: InputData):
     # Validate input length
     if len(input_data.data) != 132:
@@ -94,3 +95,8 @@ async def predict(input_data: InputData):
 @app.get("/")
 def root():
     return {"message": "Welcome FADY to the ML Prediction API!"}
+  
+  
+if __name__ == "__main__":
+    port = int(os.getenv("PORT", 8000))  # Get PORT from environment, default to 8000
+    uvicorn.run(app, host="0.0.0.0", port=port)  # Use 0.0.0.0
